@@ -105,19 +105,16 @@ function claim($token,$kodevoucher)
 	return "GAGAL CLAIM BOS";
 	}
 	}
-function ganti_nomor($email,$nama,$token,$uuid)
+function ganti_nomor($nomer,$email,$nama,$token,$uuid)
 	{
-	$nomer='6282341412332';
 	$data = '{"email":"'.$email.'","name":"'.$nama.'","phone":"+'.$nomer.'"}';
 	$ganti = request("/v4/customers", $data,"PATCH",$token,$uuid);
-	$gptoken=get_between($ganti,'GPToken: ','
-ETag:');
-	return $gptoken;
+	$gptoken=get_between($ganti,'GPToken: ','ETag:');
+	return str_replace("\n", '', $gptoken);
 	}
 	
-function verif_ganti($uuid,$otp_ganti,$token,$gptoken)
+function verif_ganti($nomer,$uuid,$otp_ganti,$token,$gptoken)
 	{
-	$nomer='6282341412332';
 	$data = '{"id":'.$uuid.',"phone":"+'.$nomer.'","verificationCode":"'.$otp_ganti.'"}';
 	$verif_ganti = request("/v4/customer/verificationUpdateProfile", $data,"POST",$token,$uuid,$gptoken);
 	$status=get_between($verif_ganti,'"message":"','"}');
@@ -144,9 +141,8 @@ function ganti_nomor2($email,$nama,$nomer,$token,$uuid)
 	$data = '{"email":"'.$email.'","name":"'.$nama.'","phone":"+'.$nomer.'"}';
 	$ganti1 = request("/v4/customers", $data,"PATCH",$token,$uuid);
 	$ganti2 = request("/v4/customers", $data,"PATCH",$token,$uuid,"","","100798");
-	$gptoken=get_between($ganti2,'GPToken: ','
-ETag:');
-	return $gptoken;
+	$gptoken=get_between($ganti2,'GPToken: ','ETag:');
+	return str_replace("\n", '', $gptoken);
 	}
 function verif_ganti2($uuid,$nomer,$otp_ganti2,$token,$gptoken)
 	{
@@ -155,7 +151,8 @@ function verif_ganti2($uuid,$nomer,$otp_ganti2,$token,$gptoken)
 	$status=get_between($verif_ganti,'"message":"','"}');
 	return $status;
 	}
-$kodevoucher="SERIUSMAIN";
+$nomer2='6282341412332';
+$kodevoucher="COBAINGOJEK";
 echo "MASUKAN NOMER REGIS = ";
 $nomer=trim(fgets(STDIN));
 $register=register($nomer);
@@ -167,11 +164,11 @@ if($register['token']==!null){
 		echo "SUKSES REGIS\n";
 		$claim=claim($verif['token'],$kodevoucher);
 		echo $claim."\n";
-		$ganti=ganti_nomor($register['email'],$register['nama'],$verif['token'],$verif['uuid']);
+		$ganti=ganti_nomor($nomer2,$register['email'],$register['nama'],$verif['token'],$verif['uuid']);
 		if($ganti==!null){
 			echo "Masukan OTP GANTI NOMER = ";
 			$otp_ganti=trim(fgets(STDIN));
-			$verif_ganti=verif_ganti($verif['uuid'],$otp_ganti,$verif['token'],$ganti);
+			$verif_ganti=verif_ganti($nomer2,$verif['uuid'],$otp_ganti,$verif['token'],$ganti);
 			if($verif_ganti=="OK"){
 				$set_pin=set_pin($verif['uuid'],$verif['token']);
 				if($set_pin=="Enter OTP"){
