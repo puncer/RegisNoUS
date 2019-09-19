@@ -151,7 +151,7 @@ function verif_ganti2($uuid,$nomer,$otp_ganti2,$token,$gptoken)
 	$status=get_between($verif_ganti,'"message":"','"}');
 	return $status;
 	}
-$nomer2='6282341412332';
+$nomer2='NOHP';
 $kodevoucher="COBAINGOJEK";
 echo "MASUKAN NOMER REGIS = ";
 $nomer=trim(fgets(STDIN));
